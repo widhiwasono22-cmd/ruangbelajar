@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAT Rumah Belajar DIO - Simulasi Ujian IPAS Kelas 4</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dioBlue: '#0284c7',
+                        dioDarkBlue: '#1e3a8a',
+                        dioGreen: '#10b981',
+                        dioLightGreen: '#dcfce7',
+                        dioYellow: '#f59e0b',
+                    },
+                    aspectRatio: {
+                        '16/9': '16 / 9',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+            min-height: 100vh;
+            user-select: none; /* Security lockdown simulation */
+        }
+        
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0284c7;
+            border-radius: 4px;
+        }
+
+        .screen-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .cat-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Sidebar animation transition */
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+
+        /* Prevent text selection */
+        .no-select {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="no-select text-slate-800 antialiased flex items-center justify-center p-2 sm:p-4 md:p-6 min-h-screen">
+
+    <!-- Global Container with Responsive Aspect Ratio Frame -->
+    <div class="w-full max-w-6xl mx-auto my-auto flex flex-col justify-center min-h-[90vh]">
+
+        <!-- Tut Wuri Handayani & Header Section -->
+        <header class="text-center mb-4 flex flex-col items-center justify-center">
+            <div class="bg-white p-3 rounded-full shadow-md mb-2 border-2 border-blue-500 inline-block transform hover:scale-105 transition-transform">
+                <!-- SVG Logo Tut Wuri Handayani -->
+                <svg class="w-14 h-14 sm:w-16 sm:h-16 text-blue-700" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Outer Hexagon / Wings Symbolism -->
+                    <path d="M100 10 L180 50 L180 150 L100 190 L20 150 L20 50 Z" fill="#0284c7" stroke="#0284c7" stroke-width="4"/>
+                    <path d="M100 22 L168 56 L168 144 L100 178 L32 144 L32 56 Z" fill="#ffffff"/>
+                    <!-- Inner Flame & Wings -->
+                    <path d="M100 40 L115 75 L150 75 L120 95 L132 130 L100 108 L68 130 L80 95 L50 75 L85 75 Z" fill="#10b981"/>
+                    <circle cx="100" cy="140" r="14" fill="#f59e0b"/>
+                    <!-- Tut Wuri Handayani Text Arc representation -->
+                    <path d="M60 160 Q 100 180 140 160" stroke="#0284c7" stroke-width="6" stroke-linecap="round" fill="none"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-blue-900 tracking-tight">RUMAH BELAJAR DIO</h1>
+            <p class="text-xs sm:text-sm font-semibold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full mt-1 inline-block border border-emerald-300">
+                Sistem CAT (Computer Assisted Test) IPAS Kelas 4
+            </p>
+        </header>
+
+        <!-- ==================== HALAMAN 1: LOGIN ==================== -->
+        <section id="page-login" class="w-full flex justify-center items-center">
+            <div class="cat-card w-full max-w-md p-6 sm:p-8 rounded-3xl border border-blue-200">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-bold text-slate-800">Login Peserta Ujian</h2>
+                    <p class="text-xs text-slate-500 mt-1">Masukkan Username & Password untuk memulai</p>
+                </div>
+
+                <!-- Notification Alert Box -->
+                <div id="login-error" class="hidden mb-4 p-3 bg-red-100 border-l-4 border-red-500 text-red-700 text-xs sm:text-sm rounded shadow-sm">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+                    <span id="login-error-msg">Username atau password salah!</span>
+                </div>
+
+                <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="username">Username</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="username" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-medium text-slate-800" placeholder="Ketik Username" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="password">Password</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-lock"></i>
+                            </span>
+                            <input type="password" id="password" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-medium text-slate-800" placeholder="Ketik Password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-500/30 transition-all text-sm flex items-center justify-center gap-2 mt-6">
+                        <span>MASUK SISTEM UJIAN</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                    <span class="text-[11px] text-slate-400">Rumah Belajar DIO &copy; 2026 - All Rights Reserved</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== HALAMAN 2: IDENTITAS PESERTA ==================== -->
+        <section id="page-identity" class="hidden w-full flex justify-center items-center">
+            <div class="cat-card w-full max-w-lg p-6 sm:p-8 rounded-3xl border border-blue-200">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-5">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">Lengkapi Data Peserta</h2>
+                        <p class="text-xs text-slate-500">Periksa dan lengkapi profil sebelum tes</p>
+                    </div>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full border border-blue-200">Tahap 2 dari 3</span>
+                </div>
+
+                <form id="form-identity" onsubmit="handleStartExam(event)" class="space-y-4">
+                    <!-- Nama Lengkap (Locked) -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap Peserta</label>
+                        <div class="relative">
+                            <input type="text" id="identity-nama" value="MUHAMMAD ARFANDIO MAHADI" disabled class="w-full px-4 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-slate-600 text-sm font-bold cursor-not-allowed">
+                            <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400" title="Terkunci">
+                                <i class="fa-solid fa-lock"></i>
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">*Nama lengkap otomatis dikunci oleh sistem</p>
+                    </div>
+
+                    <!-- Kelas -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="identity-kelas">Kelas</label>
+                        <input type="text" id="identity-kelas" value="4B" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-semibold text-slate-800">
+                    </div>
+
+                    <!-- Tempat Lahir & Tanggal Lahir Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="identity-tempat">Tempat Lahir</label>
+                            <input type="text" id="identity-tempat" placeholder="Contoh: Jakarta" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1" for="identity-tanggal">Tanggal Lahir</label>
+                            <input type="date" id="identity-tanggal" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-slate-800">
+                        </div>
+                    </div>
+
+                    <!-- Ringkasan Ujian -->
+                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-200 mt-4 text-xs space-y-1.5 text-blue-900">
+                        <div class="font-bold flex items-center gap-1.5 text-blue-800 text-sm mb-1">
+                            <i class="fa-solid fa-circle-info"></i> Ketentuan Ujian CAT IPAS:
+                        </div>
+                        <p>• Jumlah Soal: <strong>30 Soal (15 PG, 10 PG Kompleks, 5 Benar/Salah)</strong></p>
+                        <p>• Waktu Pengerjaan: <strong>60 Menit</strong> (Hitung Mundur)</p>
+                        <p>• Skor Maksimal: <strong>100 Poin</strong></p>
+                        <p>• Jawaban tersimpan otomatis, siswa dapat mengirim sebelum waktu habis.</p>
+                    </div>
+
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="goToLogin()" class="w-1/3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-xl transition-all text-sm">
+                            Kembali
+                        </button>
+                        <button type="submit" class="w-2/3 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/30 transition-all text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>MULAI SOAL UJIAN</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== HALAMAN 3: SOAL UJIAN CAT ==================== -->
+        <section id="page-exam" class="hidden w-full relative">
+            
+            <!-- Top Exam Navbar (Sticky Header) -->
+            <div class="bg-white rounded-2xl p-3 sm:p-4 shadow-md border border-slate-200 mb-4 flex flex-wrap items-center justify-between gap-3">
+                <!-- User Info -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-lg shadow">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <h3 id="exam-student-name" class="font-bold text-sm sm:text-base text-slate-800 leading-tight">MUHAMMAD ARFANDIO MAHADI</h3>
+                        <p class="text-xs text-slate-500">Kelas: <span id="exam-student-class" class="font-semibold text-blue-600">4B</span> | <span id="exam-student-ttg">Jakarta</span></p>
+                    </div>
+                </div>
+
+                <!-- Timer & Controls -->
+                <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+                    <!-- Timer Badge -->
+                    <div class="bg-amber-50 border-2 border-amber-400 text-amber-800 px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-stopwatch text-amber-600 animate-pulse text-base"></i>
+                        <div class="text-right">
+                            <div class="text-[10px] font-bold text-amber-600 uppercase tracking-wider leading-none">Sisa Waktu</div>
+                            <div id="timer-display" class="font-mono text-base sm:text-lg font-black leading-tight text-amber-900">60:00</div>
+                        </div>
+                    </div>
+
+                    <!-- Toggle Sidebar Button -->
+                    <button onclick="toggleSidebar()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow transition-all" title="Buka Navigasi Soal">
+                        <i class="fa-solid fa-th-large"></i>
+                        <span class="hidden sm:inline">Navigasi Soal</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Question & Sidebar Workspace Layout -->
+            <div class="relative flex flex-col lg:flex-row gap-4 items-start">
+                
+                <!-- Main Question Card Area (Takes Full Width when drawer closed) -->
+                <div class="w-full flex-1 cat-card rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-200 relative min-h-[500px] flex flex-col justify-between">
+                    
+                    <!-- Question Top Header -->
+                    <div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3 mb-4">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="bg-blue-600 text-white font-extrabold text-sm sm:text-base px-3 py-1 rounded-xl shadow">
+                                    Soal No. <span id="current-q-num">1</span>
+                                </span>
+                                <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200" id="current-q-category">
+                                    IPAS Kelas 4
+                                </span>
+                                <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200" id="current-q-type-badge">
+                                    Pilihan Ganda
+                                </span>
+                            </div>
+                            <!-- Save indicator status -->
+                            <div class="flex items-center text-xs text-emerald-600 font-medium bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                                <i class="fa-solid fa-cloud-check mr-1.5"></i>
+                                <span>Otomatis Tersimpan</span>
+                            </div>
+                        </div>
+
+                        <!-- Question Body Stimulus & Text -->
+                        <div class="space-y-4 mb-6">
+                            <!-- Visual Graphic / Table Stimulus Container -->
+                            <div id="question-stimulus" class="bg-slate-50 p-3 sm:p-4 rounded-2xl border border-slate-200 text-sm overflow-x-auto">
+                                <!-- Dynamic Stimulus Injector -->
+                            </div>
+
+                            <!-- Question Text -->
+                            <div id="question-text" class="text-sm sm:text-base font-semibold text-slate-800 leading-relaxed space-y-2">
+                                <!-- Dynamic Question Text -->
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Options / Checkbox / True-False Table Container -->
+                        <div class="space-y-3" id="options-container">
+                            <!-- Dynamic Options Rendered Here -->
+                        </div>
+                    </div>
+
+                    <!-- Question Navigation Footer Actions -->
+                    <div class="pt-6 mt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                        <button onclick="navigateQuestion(-1)" id="btn-prev" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            <span>Sebelumnya</span>
+                        </button>
+
+                        <button onclick="toggleDoubt()" id="btn-doubt" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all border border-amber-300">
+                            <i id="doubt-icon" class="fa-regular fa-flag"></i>
+                            <span id="doubt-text">Ragu-Ragu</span>
+                        </button>
+
+                        <button onclick="navigateQuestion(1)" id="btn-next" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow transition-all ml-auto">
+                            <span>Selanjutnya</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+
+                        <button onclick="confirmFinishExam()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-md shadow-emerald-600/30 transition-all">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Selesai & Kirim</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Auto-Hide Navigation Sidebar Overlay / Panel -->
+                <div id="sidebar-drawer" class="fixed inset-y-0 right-0 z-40 w-80 max-w-[85vw] bg-white shadow-2xl border-l border-slate-200 p-5 transform translate-x-full sidebar-transition flex flex-col justify-between">
+                    <div>
+                        <!-- Sidebar Header -->
+                        <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-list-ol text-blue-600 text-lg"></i>
+                                <h4 class="font-bold text-slate-800 text-base">Navigasi Soal (1-30)</h4>
+                            </div>
+                            <button onclick="toggleSidebar(false)" class="text-slate-400 hover:text-slate-700 p-1 text-lg">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <!-- Legend Status Indicators -->
+                        <div class="grid grid-cols-3 gap-2 mb-4 text-[11px] font-semibold text-center">
+                            <div class="bg-emerald-100 text-emerald-800 p-1.5 rounded-lg border border-emerald-300">
+                                <span class="block text-emerald-600 font-bold" id="count-answered">0</span> Sudah
+                            </div>
+                            <div class="bg-amber-100 text-amber-800 p-1.5 rounded-lg border border-amber-300">
+                                <span class="block text-amber-600 font-bold" id="count-doubt">0</span> Ragu
+                            </div>
+                            <div class="bg-slate-100 text-slate-700 p-1.5 rounded-lg border border-slate-300">
+                                <span class="block text-slate-500 font-bold" id="count-unanswered">30</span> Belum
+                            </div>
+                        </div>
+
+                        <!-- 1-30 Number Grid -->
+                        <div id="question-grid" class="grid grid-cols-5 gap-2 max-h-[60vh] overflow-y-auto p-1">
+                            <!-- Dynamic 1-30 Buttons Rendered Here -->
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Bottom Actions -->
+                    <div class="pt-4 border-t border-slate-200">
+                        <button onclick="confirmFinishExam()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow">
+                            <i class="fa-solid fa-check-double"></i>
+                            <span>Selesai Ujian Sekarang</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Backdrop Overlay for Mobile Drawer -->
+                <div id="drawer-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-30 hidden transition-opacity"></div>
+
+            </div>
+        </section>
+
+        <!-- ==================== HALAMAN 4: HASIL SKOR & PEMBAHASAN ==================== -->
+        <section id="page-result" class="hidden w-full flex justify-center items-center py-4">
+            <div class="cat-card w-full max-w-3xl p-6 sm:p-8 rounded-3xl border border-blue-200">
+                <!-- Header Score Badge -->
+                <div class="text-center pb-6 border-b border-slate-200">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 border-4 border-emerald-500 text-emerald-600 text-3xl mb-3 shadow-inner">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-800">Hasil Ujian CAT IPAS Selesai</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Rumah Belajar DIO - Laporan Capaian Nilai</p>
+                </div>
+
+                <!-- Student Identity & Score Summary Card -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                    <!-- Profile Card -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 md:col-span-1 flex flex-col justify-center space-y-1 text-xs">
+                        <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Identitas Siswa</div>
+                        <div id="res-student-nama" class="font-bold text-sm text-slate-800">MUHAMMAD ARFANDIO MAHADI</div>
+                        <div id="res-student-kelas" class="text-slate-600">Kelas: 4B</div>
+                        <div id="res-student-ttg" class="text-slate-500">Jakarta</div>
+                    </div>
+
+                    <!-- Total Score Display -->
+                    <div class="bg-gradient-to-br from-blue-600 to-emerald-600 text-white p-5 rounded-2xl md:col-span-2 flex items-center justify-between shadow-lg">
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-widest opacity-80">Skor Akhir Kamu</div>
+                            <div id="res-total-score" class="text-4xl sm:text-5xl font-black tracking-tight my-1">100 / 100</div>
+                            <div id="res-grade-status" class="text-xs font-semibold bg-white/20 px-3 py-1 rounded-full inline-block">Sangat Memuaskan!</div>
+                        </div>
+                        <div class="text-right text-xs space-y-1">
+                            <div class="bg-white/20 px-3 py-1 rounded-lg"><span class="font-bold">Benar:</span> <span id="res-correct-count">30</span> Soal</div>
+                            <div class="bg-white/20 px-3 py-1 rounded-lg"><span class="font-bold">Salah:</span> <span id="res-wrong-count">0</span> Soal</div>
+                            <div class="bg-white/20 px-3 py-1 rounded-lg"><span class="font-bold">Waktu Terpakai:</span> <span id="res-time-used">12m 30s</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion/Review Discussion Section -->
+                <div class="mt-6">
+                    <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-blue-600"></i>
+                        <span>Pembahasan Soal Lengkap</span>
+                    </h3>
+                    <div id="review-container" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                        <!-- Dynamic Question Review Breakdown injected here -->
+                    </div>
+                </div>
+
+                <!-- Footer Action Buttons -->
+                <div class="mt-8 pt-4 border-t border-slate-200 flex flex-wrap gap-3 justify-end">
+                    <button onclick="resetTest()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl text-sm shadow flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Ulangi Ujian / Logout</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ==================== MODAL DIALOGS ==================== -->
+    
+    <!-- Confirm Submit Modal -->
+    <div id="modal-confirm" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 transform transition-all">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xl mb-4 mx-auto">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h3 class="text-lg font-bold text-center text-slate-800 mb-2">Konfirmasi Pengiriman Jawaban</h3>
+            <div id="modal-confirm-status" class="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200 mb-4 space-y-1">
+                <p>• Sudah dijawab: <strong id="modal-ans-count">0</strong> dari 30 soal</p>
+                <p>• Ragu-ragu: <strong id="modal-doubt-count">0</strong> soal</p>
+                <p>• Belum dijawab: <strong id="modal-unans-count" class="text-red-600">0</strong> soal</p>
+            </div>
+            <p class="text-xs text-slate-500 text-center mb-6">Apakah Anda yakin ingin menyelesaikan ujian sekarang? Jawaban tidak dapat diubah lagi setelah dikirim.</p>
+            <div class="flex gap-3">
+                <button onclick="closeModal('modal-confirm')" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs sm:text-sm">
+                    Lanjutkan Ujian
+                </button>
+                <button onclick="submitExam()" class="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs sm:text-sm shadow">
+                    Ya, Kirim Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Focus Loss / Anti-Cheat Warning Modal -->
+    <div id="modal-security" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-2 border-red-500 text-center">
+            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-2xl mb-3 mx-auto animate-bounce">
+                <i class="fa-solid fa-shield-cat"></i>
+            </div>
+            <h3 class="text-lg font-bold text-red-700 mb-1">PERINGATAN KEAMANAN UJIAN!</h3>
+            <p class="text-xs text-slate-600 mb-4">
+                Sistem mendeteksi Anda berpindah tab atau meninggalkan aplikasi ujian! 
+                <br>Pelanggaran dicatat: <span id="violation-count" class="font-bold text-red-600 text-sm">1</span> kali.
+            </p>
+            <div class="bg-red-50 text-red-800 text-[11px] p-2.5 rounded-xl mb-5 border border-red-200">
+                Harap tetap berada di halaman ujian hingga seluruh soal selesai dikerjakan!
+            </div>
+            <button onclick="closeModal('modal-security')" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl text-xs sm:text-sm shadow">
+                Saya Mengerti & Kembali Ujian
+            </button>
+        </div>
+    </div>
+
+    <!-- Low Time Alert Modal -->
+    <div id="modal-lowtime" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-2 border-amber-400 text-center">
+            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-2xl mb-3 mx-auto">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <h3 class="text-lg font-bold text-amber-800 mb-1">WAKTU UJIAN HAMPIR HABIS</h3>
+            <p class="text-xs text-slate-600 mb-4">Sisa waktu pengerjaan Anda kurang dari <strong>5 Menit</strong>. Periksa kembali jawaban Anda!</p>
+            <button onclick="closeModal('modal-lowtime')" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs sm:text-sm shadow">
+                Lanjutkan Pengerjaan
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        /* ==================== BANK SOAL IPAS KELAS 4 (30 SOAL) ==================== */
+        /* Rincian:
+           - Soal 1  - 15 : Pilihan Ganda (type: 'pg')
+           - Soal 16 - 25 : Pilihan Ganda Kompleks Ceklis (type: 'pgk')
+           - Soal 26 - 30 : Benar / Salah Tabel Pernyataan (type: 'bs')
+        */
+        const rawQuestionBank = [
+            // ==================== BAGIAN A: 15 PILIHAN GANDA ====================
+            {
+                id: 1,
+                type: "pg",
+                category: "Bab 1 • Bagian Tubuh Tumbuhan",
+                stimulus: `
+                    <div class="flex flex-col sm:flex-row items-center gap-4 bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs">
+                        <svg class="w-24 h-24 shrink-0" viewBox="0 0 100 100">
+                            <!-- Soil -->
+                            <rect x="10" y="72" width="80" height="18" rx="4" fill="#a16207" opacity="0.25"/>
+                            <!-- Roots -->
+                            <path d="M50 72 L40 86 M50 72 L50 88 M50 72 L62 85" stroke="#92400e" stroke-width="2.5" stroke-linecap="round"/>
+                            <!-- Stem -->
+                            <line x1="50" y1="30" x2="50" y2="72" stroke="#15803d" stroke-width="4" stroke-linecap="round"/>
+                            <!-- Leaves -->
+                            <ellipse cx="36" cy="52" rx="12" ry="6" transform="rotate(-20 36 52)" fill="#22c55e"/>
+                            <ellipse cx="64" cy="46" rx="12" ry="6" transform="rotate(20 64 46)" fill="#22c55e"/>
+                            <!-- Flower -->
+                            <circle cx="50" cy="24" r="9" fill="#f59e0b"/>
+                            <circle cx="50" cy="24" r="4" fill="#fef08a"/>
+                            <!-- Labels -->
+                            <text x="65" y="25" font-size="9" font-weight="bold" fill="#1e3a8a">1 (Bunga)</text>
+                            <text x="72" y="42" font-size="9" font-weight="bold" fill="#1e3a8a">2 (Daun)</text>
+                            <text x="56" y="64" font-size="9" font-weight="bold" fill="#1e3a8a">3 (Batang)</text>
+                            <text x="66" y="85" font-size="9" font-weight="bold" fill="#1e3a8a">4 (Akar)</text>
+                        </svg>
+                        <p class="text-slate-700">Setiap bagian tubuh tumbuhan memiliki peran penting untuk kelangsungan hidup tumbuhan tersebut, mulai dari menyerap zat hara hingga menghasilkan biji.</p>
+                    </div>
+                `,
+                question: "Fungsi utama bagian tubuh tumbuhan yang ditunjukkan oleh nomor <strong>3 (Batang)</strong> adalah ...",
+                options: {
+                    A: "Menyerap air dan unsur hara dari dalam tanah",
+                    B: "Mengantarkan air dan mineral dari akar ke daun serta menopang tumbuhan",
+                    C: "Tempat berlangsungnya penyerbukan dan pembuahan",
+                    D: "Melindungi biji di dalam daging buah"
+                },
+                answer: "B",
+                explanation: "Batang berfungsi menyalurkan air dan mineral dari akar menuju daun, menyalurkan hasil fotosintesis ke seluruh tubuh tumbuhan, serta menopang berdirinya tumbuhan."
+            },
+            {
+                id: 2,
+                type: "pg",
+                category: "Bab 1 • Proses Fotosintesis",
+                stimulus: `
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-xs">
+                        <p class="text-slate-700">Tumbuhan hijau mampu membuat makanannya sendiri melalui proses <strong>fotosintesis</strong> pada daun yang mengandung zat hijau daun (<strong>klorofil</strong>) dengan bantuan energi cahaya matahari.</p>
+                    </div>
+                `,
+                question: "Bahan yang dibutuhkan tumbuhan dalam proses fotosintesis serta hasil yang dikeluarkan adalah ...",
+                options: {
+                    A: "Membutuhkan oksigen dan air, menghasilkan karbon dioksida dan glukosa",
+                    B: "Membutuhkan karbon dioksida dan air, menghasilkan glukosa dan oksigen",
+                    C: "Membutuhkan glukosa dan oksigen, menghasilkan air dan karbon dioksida",
+                    D: "Membutuhkan karbon dioksida dan oksigen, menghasilkan air dan cahaya"
+                },
+                answer: "B",
+                explanation: "Fotosintesis memerlukan air (H2O), karbon dioksida (CO2), cahaya matahari, dan klorofil untuk menghasilkan karbohidrat/glukosa (energi) dan gas oksigen (O2)."
+            },
+            {
+                id: 3,
+                type: "pg",
+                category: "Bab 1 • Perkembangbiakan Tumbuhan",
+                stimulus: `
+                    <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs">
+                        <p class="text-slate-700">Lebah dan kupu-kupu sering hinggap pada bunga yang berwarna cerah untuk menghisap nektar. Tanpa sengaja, serbuk sari menempel pada kaki serangga tersebut dan jatuh ke kepala putik bunga.</p>
+                    </div>
+                `,
+                question: "Peristiwa jatuhnya serbuk sari ke kepala putik pada bunga disebut ...",
+                options: {
+                    A: "Fotosintesis",
+                    B: "Penyerbukan",
+                    C: "Perkembangbiakan vegetatif",
+                    D: "Penguapan"
+                },
+                answer: "B",
+                explanation: "Penyerbukan adalah peristiwa jatuhnya serbuk sari (alat kelamin jantan) ke kepala putik (alat kelamin betina) yang mengawali perkembangbiakan generatif pada tumbuhan berbunga."
+            },
+            {
+                id: 4,
+                type: "pg",
+                category: "Bab 2 • Sifat-Sifat Wujud Zat",
+                stimulus: `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                        <p class="text-slate-700">Dio menuangkan <strong>200 ml</strong> air sirup dari dalam botol ke dalam sebuah gelas kosong, kemudian memindahkannya lagi ke dalam mangkuk kecil.</p>
+                    </div>
+                `,
+                question: "Perubahan yang terjadi pada air sirup saat dipindahkan ke berbagai wadah membuktikan bahwa benda cair memiliki sifat ...",
+                options: {
+                    A: "Bentuk dan volumenya selalu tetap",
+                    B: "Bentuk berubah mengikuti wadahnya dan volumenya tetap",
+                    C: "Bentuk tetap dan volumenya selalu berubah",
+                    D: "Bentuk dan volumenya selalu berubah memenuhi ruangan"
+                },
+                answer: "B",
+                explanation: "Zat cair memiliki sifat bentuknya berubah-ubah mengikuti bentuk wadah yang ditempatinya, sedangkan volumenya selalu tetap (tetap 200 ml)."
+            },
+            {
+                id: 5,
+                type: "pg",
+                category: "Bab 2 • Perubahan Wujud Benda",
+                stimulus: `
+                    <div class="bg-purple-50 p-3 rounded-xl border border-purple-200 text-xs">
+                        <p class="text-slate-700">Ibu meletakkan beberapa butir <strong>kapur barus (kamper)</strong> di sudut lemari pakaian agar pakaian tetap harum dan terhindar dari jamur. Setelah dua minggu, ukuran kapur barus mengecil dan lama-kelamaan habis.</p>
+                    </div>
+                `,
+                question: "Perubahan wujud benda yang terjadi pada kapur barus tersebut dinamakan ...",
+                options: {
+                    A: "Mencair",
+                    B: "Menguap",
+                    C: "Menyublim",
+                    D: "Mengembun"
+                },
+                answer: "C",
+                explanation: "Menyublim adalah peristiwa perubahan wujud zat dari padat langsung menjadi gas tanpa melalui fase cair, seperti yang terjadi pada kapur barus (kamper)."
+            },
+            {
+                id: 6,
+                type: "pg",
+                category: "Bab 2 • Perubahan Wujud Benda",
+                stimulus: `
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-xs">
+                        <p class="text-slate-700">Di daerah pegunungan yang sangat dingin pada pagi hari, uap air di udara dapat berubah langsung menjadi butiran kristal salju atau bunga es yang menempel pada dedaunan.</p>
+                    </div>
+                `,
+                question: "Perubahan wujud benda dari gas menjadi padat seperti peristiwa di atas disebut ...",
+                options: {
+                    A: "Mengablur (mengkristal)",
+                    B: "Membeku",
+                    C: "Mengembun",
+                    D: "Menyublim"
+                },
+                answer: "A",
+                explanation: "Mengablur atau mengkristal adalah perubahan wujud dari gas menjadi padat karena pelepasan kalor (pendinginan), contohnya terbentuknya salju dan bunga es."
+            },
+            {
+                id: 7,
+                type: "pg",
+                category: "Bab 3 • Jenis-Jenis Gaya",
+                stimulus: `
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs">
+                        <p class="text-slate-700">Saat bermain ketapel, Dio menarik karet ketapel ke belakang sehingga karet meregang. Ketika tarikan dilepaskan, kerikil melesat jauh ke depan.</p>
+                    </div>
+                `,
+                question: "Jenis gaya yang dimanfaatkan saat karet ketapel melontarkan kerikil adalah ...",
+                options: {
+                    A: "Gaya magnet",
+                    B: "Gaya pegas",
+                    C: "Gaya gravitasi",
+                    D: "Gaya listrik statis"
+                },
+                answer: "B",
+                explanation: "Gaya pegas adalah gaya tarik yang ditimbulkan oleh benda elastis (lentur) seperti karet ketapel, busur panah, atau pegas/per."
+            },
+            {
+                id: 8,
+                type: "pg",
+                category: "Bab 3 • Pengaruh Gaya terhadap Benda",
+                stimulus: `
+                    <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs">
+                        <p class="text-slate-700">Dalam pertandingan sepak bola, seorang penyerang menendang bola dengan keras ke arah gawang, lalu penjaga gawang berhasil menangkap bola tersebut dengan kedua tangannya.</p>
+                    </div>
+                `,
+                question: "Pengaruh gaya yang ditunjukkan oleh tindakan penjaga gawang menangkap bola adalah ...",
+                options: {
+                    A: "Mengubah bentuk benda",
+                    B: "Mengubah benda diam menjadi bergerak",
+                    C: "Mengubah benda bergerak menjadi diam",
+                    D: "Mempercepat laju gerak benda"
+                },
+                answer: "C",
+                explanation: "Bola yang semula bergerak cepat menuju gawang berhenti setelah ditahan oleh gaya otot penjaga gawang (gaya mengubah benda bergerak menjadi diam)."
+            },
+            {
+                id: 9,
+                type: "pg",
+                category: "Bab 3 • Kemagnetan",
+                stimulus: `
+                    <div class="font-bold text-blue-900 mb-1"><i class="fa-solid fa-magnet mr-1 text-red-600"></i> Daftar Benda di Meja Praktikum</div>
+                    <table class="w-full text-xs text-left border-collapse border border-slate-300 bg-white">
+                        <thead>
+                            <tr class="bg-blue-100 text-blue-900">
+                                <th class="border border-slate-300 p-2">No</th>
+                                <th class="border border-slate-300 p-2">Nama Benda</th>
+                                <th class="border border-slate-300 p-2">Bahan Penyusun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="border border-slate-300 p-2">1</td><td class="border border-slate-300 p-2">Paku payung</td><td class="border border-slate-300 p-2">Besi</td></tr>
+                            <tr><td class="border border-slate-300 p-2">2</td><td class="border border-slate-300 p-2">Penggaris</td><td class="border border-slate-300 p-2">Plastik</td></tr>
+                            <tr><td class="border border-slate-300 p-2">3</td><td class="border border-slate-300 p-2">Jarum jahit</td><td class="border border-slate-300 p-2">Baja</td></tr>
+                            <tr><td class="border border-slate-300 p-2">4</td><td class="border border-slate-300 p-2">Penghapus</td><td class="border border-slate-300 p-2">Karet</td></tr>
+                        </tbody>
+                    </table>
+                `,
+                question: "Berdasarkan tabel di atas, pasangan benda yang termasuk <strong>benda magnetis</strong> adalah ...",
+                options: {
+                    A: "1 dan 2",
+                    B: "1 dan 3",
+                    C: "2 dan 4",
+                    D: "3 dan 4"
+                },
+                answer: "B",
+                explanation: "Benda magnetis adalah benda yang dapat ditarik kuat oleh magnet, yaitu benda yang terbuat dari besi, baja, nikel, atau kobalt (paku payung dan jarum jahit)."
+            },
+            {
+                id: 10,
+                type: "pg",
+                category: "Bab 4 • Sumber-Sumber Energi",
+                stimulus: `
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs">
+                        <p class="text-slate-700">Untuk mengurangi pencemaran udara dan ketergantungan pada bahan bakar fosil seperti batu bara dan minyak bumi, pemerintah membangun Pembangkit Listrik Tenaga Surya (PLTS) dan Pembangkit Listrik Tenaga Bayu (PLTB).</p>
+                    </div>
+                `,
+                question: "Sumber energi utama yang dimanfaatkan oleh PLTS dan PLTB secara berurutan adalah ...",
+                options: {
+                    A: "Air dan panas bumi",
+                    B: "Cahaya matahari dan angin",
+                    C: "Minyak bumi dan gas alam",
+                    D: "Angin dan gelombang laut"
+                },
+                answer: "B",
+                explanation: "PLTS memanfaatkan energi cahaya/panas matahari melalui panel surya, sedangkan PLTB (bayu) memanfaatkan energi gerak angin untuk memutar turbin."
+            },
+            {
+                id: 11,
+                type: "pg",
+                category: "Bab 4 • Transformasi Bentuk Energi",
+                stimulus: `
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-xs">
+                        <p class="text-slate-700">Di rumah terdapat berbagai peralatan listrik seperti setrika listrik, kipas angin, lampu LED, dan bel listrik.</p>
+                    </div>
+                `,
+                question: "Peralatan rumah tangga yang mengubah <strong>energi listrik menjadi energi panas</strong> adalah ...",
+                options: {
+                    A: "Kipas angin dan blender",
+                    B: "Setrika listrik dan penanak nasi (rice cooker)",
+                    C: "Lampu belajar dan senter",
+                    D: "Bel listrik dan radio"
+                },
+                answer: "B",
+                explanation: "Setrika listrik dan rice cooker mengubah energi listrik menjadi energi panas (kalor) untuk merapikan pakaian dan menanak nasi."
+            },
+            {
+                id: 12,
+                type: "pg",
+                category: "Bab 4 • Gejala Listrik Statis",
+                stimulus: `
+                    <div class="bg-purple-50 p-3 rounded-xl border border-purple-200 text-xs">
+                        <p class="text-slate-700">Siti menggosok-gosokkan penggaris plastik (mika) ke rambutnya yang kering selama beberapa saat. Ketika penggaris tersebut didekatkan ke potongan kertas kecil-kecil, potongan kertas tersebut tertarik dan menempel pada penggaris.</p>
+                    </div>
+                `,
+                question: "Peristiwa tertariknya potongan kertas oleh penggaris mika tersebut merupakan contoh gejala ...",
+                options: {
+                    A: "Listrik dinamis",
+                    B: "Listrik statis",
+                    C: "Gaya magnet",
+                    D: "Gaya gravitasi"
+                },
+                answer: "B",
+                explanation: "Listrik statis adalah kumpulan muatan listrik dalam jumlah tertentu yang tetap (diam sementara) pada permukaan benda akibat gesekan dua benda, seperti penggaris mika dan rambut kering."
+            },
+            {
+                id: 13,
+                type: "pg",
+                category: "Bab 5 • Panca Indera",
+                stimulus: `
+                    <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs">
+                        <p class="text-slate-700">Saat kita masuk dari halaman yang terang benderang ke dalam ruangan yang redup, mata kita memerlukan penyesuaian agar dapat melihat benda-benda di dalam ruangan dengan jelas.</p>
+                    </div>
+                `,
+                question: "Bagian mata yang berfungsi mengatur banyak sedikitnya cahaya yang masuk ke dalam mata dengan cara membesar dan mengecil adalah ...",
+                options: {
+                    A: "Kornea",
+                    B: "Pupil",
+                    C: "Retina",
+                    D: "Saraf optik"
+                },
+                answer: "B",
+                explanation: "Pupil adalah celah lingkaran di tengah iris yang dapat membesar saat cahaya redup dan mengecil saat cahaya terang untuk mengatur jumlah cahaya yang masuk ke mata."
+            },
+            {
+                id: 14,
+                type: "pg",
+                category: "Bab 5 • Siklus Hidup Makhluk Hidup",
+                stimulus: `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                        <p class="text-slate-700">Kupu-kupu dan katak mengalami perubahan bentuk tubuh yang sangat berbeda pada setiap tahap pertumbuhannya dari telur hingga menjadi hewan dewasa.</p>
+                    </div>
+                `,
+                question: "Urutan tahapan siklus hidup <strong>kupu-kupu</strong> yang benar adalah ...",
+                options: {
+                    A: "Telur → Kepompong (pupa) → Ulat (larva) → Kupu-kupu",
+                    B: "Telur → Ulat (larva) → Kepompong (pupa) → Kupu-kupu",
+                    C: "Telur → Nimfa → Kepompong (pupa) → Kupu-kupu",
+                    D: "Telur → Berudu → Ulat (larva) → Kupu-kupu"
+                },
+                answer: "B",
+                explanation: "Kupu-kupu mengalami metamorfosis sempurna dengan urutan: Telur → Ulat (larva) → Kepompong (pupa) → Kupu-kupu dewasa."
+            },
+            {
+                id: 15,
+                type: "pg",
+                category: "Bab 6 • Bentang Alam & Pemanfaatan SDA",
+                stimulus: `
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs">
+                        <p class="text-slate-700">Wilayah Puncak di Bogor dan Dieng di Jawa Tengah memiliki ketinggian lebih dari 700 meter di atas permukaan laut dengan suhu udara yang sejuk serta tanah yang subur.</p>
+                    </div>
+                `,
+                question: "Bentang alam wilayah tersebut dan kegiatan ekonomi penduduk yang paling sesuai adalah ...",
+                options: {
+                    A: "Pantai; tambak garam dan nelayan ikan laut",
+                    B: "Dataran rendah; kawasan industri berat dan pelabuhan",
+                    C: "Dataran tinggi; perkebunan teh, kopi, dan sayuran",
+                    D: "Muara sungai; budidaya kerang mutiara"
+                },
+                answer: "C",
+                explanation: "Wilayah dengan ketinggian di atas 700 mdpl dan berudara sejuk merupakan bentang alam dataran tinggi yang sangat cocok untuk perkebunan teh, kopi, stroberi, dan sayuran."
+            },
+
+            // ==================== BAGIAN B: 10 PILIHAN GANDA KOMPLEKS (CEKLIS) ====================
+            {
+                id: 16,
+                type: "pgk",
+                category: "Bab 1 • Tumbuhan, Sumber Kehidupan",
+                stimulus: `
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs">
+                        <p class="text-slate-700">Daun merupakan bagian tumbuhan yang berperan sebagai "dapur" tempat memasak makanan bagi seluruh bagian tumbuhan.</p>
+                    </div>
+                `,
+                question: "Berilah tanda centang (✓) pada pernyataan yang <strong>BENAR</strong> mengenai daun dan proses fotosintesis! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Klorofil pada daun berfungsi menangkap energi cahaya matahari",
+                    B: "Karbon dioksida masuk ke dalam daun melalui mulut daun (stomata)",
+                    C: "Hasil fotosintesis berupa glukosa disimpan sebagai cadangan makanan pada umbi, buah, atau biji",
+                    D: "Proses fotosintesis pada tumbuhan hijau berlangsung paling cepat di tempat gelap gulita"
+                },
+                answer: ["A", "B", "C"],
+                explanation: "Klorofil menangkap cahaya matahari (A benar), CO2 masuk lewat stomata (B benar), hasil karbohidrat/glukosa disimpan sebagai cadangan makanan (C benar). Fotosintesis membutuhkan cahaya sehingga tidak terjadi di tempat gelap (D salah)."
+            },
+            {
+                id: 17,
+                type: "pgk",
+                category: "Bab 1 • Perkembangbiakan Tumbuhan",
+                stimulus: `
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-xs">
+                        <p class="text-slate-700">Tumbuhan dapat berkembang biak secara <strong>generatif</strong> (melalui perkawinan pada bunga) maupun secara <strong>vegetatif</strong> (tanpa melalui perkawinan).</p>
+                    </div>
+                `,
+                question: "Pilihlah pernyataan yang <strong>BENAR</strong> tentang perkembangbiakan tumbuhan! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Benang sari merupakan alat kelamin jantan pada bunga",
+                    B: "Pohon pisang dan bambu berkembang biak secara vegetatif menggunakan tunas",
+                    C: "Bawang merah berkembang biak menggunakan umbi lapis",
+                    D: "Perkembangbiakan generatif terjadi tanpa melalui proses penyerbukan"
+                },
+                answer: ["A", "B", "C"],
+                explanation: "Benang sari adalah alat kelamin jantan (A benar). Pisang dan bambu bertunas (B benar). Bawang merah menggunakan umbi lapis (C benar). Perkembangbiakan generatif diawali penyerbukan (D salah)."
+            },
+            {
+                id: 18,
+                type: "pgk",
+                category: "Bab 2 • Sifat-Sifat Wujud Zat",
+                stimulus: `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                        <p class="text-slate-700">Di sekitar kita terdapat tiga wujud zat utama, yaitu <strong>benda padat</strong> (batu, kayu), <strong>benda cair</strong> (air, minyak), dan <strong>benda gas</strong> (udara, uap air).</p>
+                    </div>
+                `,
+                question: "Berilah tanda centang (✓) pada pernyataan yang <strong>BENAR</strong> mengenai sifat-sifat wujud zat! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Benda padat memiliki bentuk dan volume yang tetap meskipun dipindahkan ke tempat lain",
+                    B: "Benda gas memiliki sifat menekan ke segala arah dan mengisi seluruh ruangan",
+                    C: "Volume benda gas selalu tetap seperti benda padat",
+                    D: "Permukaan benda cair yang tenang selalu datar"
+                },
+                answer: ["A", "B", "D"],
+                explanation: "Benda padat bentuk & volumenya tetap (A benar). Gas menekan ke segala arah dan mengisi seluruh ruangan (B benar). Permukaan zat cair tenang selalu datar (D benar). Volume gas berubah-ubah sesuai ruangnya (C salah)."
+            },
+            {
+                id: 19,
+                type: "pgk",
+                category: "Bab 2 • Perubahan Wujud Benda",
+                stimulus: `
+                    <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs">
+                        <p class="text-slate-700">Perubahan wujud benda terjadi karena benda menerima panas (kalor) atau melepaskan panas ke lingkungan sekitar.</p>
+                    </div>
+                `,
+                question: "Pilihlah pasangan peristiwa dan perubahan wujud benda yang <strong>BENAR</strong>! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Mentega yang dipanaskan di atas wajan meleleh merupakan peristiwa mencair",
+                    B: "Munculnya titik-titik air di bagian luar gelas berisi es batu merupakan peristiwa mengembun",
+                    C: "Air yang dimasak hingga mendidih lama-kelamaan berkurang merupakan peristiwa membeku",
+                    D: "Pakaian basah yang dijemur di bawah terik matahari menjadi kering merupakan peristiwa menguap"
+                },
+                answer: ["A", "B", "D"],
+                explanation: "Mentega meleleh = mencair (A benar). Titik air di luar gelas es = mengembun (B benar). Pakaian basah mengering = air menguap (D benar). Air mendidih berkurang adalah menguap, bukan membeku (C salah)."
+            },
+            {
+                id: 20,
+                type: "pgk",
+                category: "Bab 3 • Jenis Gaya dan Pengaruhnya",
+                stimulus: `
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-xs">
+                        <p class="text-slate-700">Dio mengayuh sepedanya di jalan aspal. Saat melihat kucing menyeberang, Dio menekan tuas rem sepeda hingga sepedanya berhenti.</p>
+                    </div>
+                `,
+                question: "Berilah tanda centang (✓) pada pernyataan yang <strong>BENAR</strong> berdasarkan peristiwa tersebut! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Saat kaki Dio mengayuh pedal sepeda, gaya yang bekerja adalah gaya otot",
+                    B: "Gaya gesek antara kampas rem dan pelek roda membuat laju sepeda melambat lalu berhenti",
+                    C: "Alur pada permukaan ban sepeda dibuat untuk memperkecil gaya gesek agar sepeda mudah tergelincir",
+                    D: "Membelokkan setang sepeda menunjukkan bahwa gaya dapat mengubah arah gerak benda"
+                },
+                answer: ["A", "B", "D"],
+                explanation: "Mengayuh pedal memakai gaya otot (A benar). Pengereman memanfaatkan gaya gesek (B benar). Membelokkan setang mengubah arah gerak (D benar). Alur ban justru memperbesar gaya gesek agar tidak tergelincir (C salah)."
+            },
+            {
+                id: 21,
+                type: "pgk",
+                category: "Bab 3 • Kemagnetan",
+                stimulus: `
+                    <div class="bg-purple-50 p-3 rounded-xl border border-purple-200 text-xs">
+                        <p class="text-slate-700">Dalam percobaan IPA, siswa mendekatkan dua buah magnet batang dan menguji daya tarik magnet terhadap berbagai benda.</p>
+                    </div>
+                `,
+                question: "Pilihlah pernyataan yang <strong>BENAR</strong> mengenai sifat-sifat magnet! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Setiap magnet memiliki dua kutub, yaitu kutub Utara (U) dan kutub Selatan (S)",
+                    B: "Jika kutub Utara magnet didekatkan dengan kutub Utara magnet lain, keduanya akan tarik-menarik",
+                    C: "Jika kutub Utara magnet didekatkan dengan kutub Selatan magnet lain, keduanya akan tarik-menarik",
+                    D: "Kaca, kayu, dan plastik termasuk benda nonmagnetis"
+                },
+                answer: ["A", "C", "D"],
+                explanation: "Magnet punya 2 kutub U dan S (A benar). Kutub tidak senama (U dan S) tarik-menarik (C benar). Kaca, kayu, plastik tidak ditarik magnet sehingga nonmagnetis (D benar). Kutub senama (U dan U) seharusnya tolak-menolak (B salah)."
+            },
+            {
+                id: 22,
+                type: "pgk",
+                category: "Bab 4 • Transformasi Bentuk Energi",
+                stimulus: `
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs">
+                        <p class="text-slate-700">Energi tidak dapat diciptakan maupun dimusnahkan, tetapi energi dapat diubah dari satu bentuk ke bentuk energi lainnya.</p>
+                    </div>
+                `,
+                question: "Berilah tanda centang (✓) pada pasangan alat dan perubahan energi yang <strong>BENAR</strong>! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Blender: energi listrik berubah menjadi energi gerak",
+                    B: "Lampu pijar: energi listrik berubah menjadi energi cahaya dan panas",
+                    C: "Sepeda motor berbahan bakar bensin: energi kimia berubah menjadi energi gerak",
+                    D: "Kipas angin: energi gerak berubah menjadi energi kimia"
+                },
+                answer: ["A", "B", "C"],
+                explanation: "Blender mengubah listrik menjadi gerak (A benar). Lampu mengubah listrik menjadi cahaya dan panas (B benar). Motor mengubah energi kimia bensin menjadi gerak (C benar). Kipas angin mengubah listrik menjadi gerak (D salah)."
+            },
+            {
+                id: 23,
+                type: "pgk",
+                category: "Bab 4 • Gejala Listrik Statis dan Dinamis",
+                stimulus: `
+                    <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs">
+                        <p class="text-slate-700">Dalam kehidupan sehari-hari kita mengenal dua jenis gejala kelistrikan, yaitu <strong>listrik statis</strong> dan <strong>listrik dinamis</strong>.</p>
+                    </div>
+                `,
+                question: "Pilihlah pernyataan yang <strong>BENAR</strong> mengenai listrik statis dan listrik dinamis! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Listrik dinamis mengalir melalui rangkaian listrik tertutup untuk menyalakan lampu di rumah",
+                    B: "Baterai pada senter merupakan sumber energi listrik dinamis",
+                    C: "Petir yang menyambar saat hujan merupakan gejala alam listrik statis dalam skala besar",
+                    D: "Penggaris mika yang digosok ke rambut dapat menarik potongan kertas karena adanya arus listrik dinamis"
+                },
+                answer: ["A", "B", "C"],
+                explanation: "Listrik dinamis mengalir di rangkaian tertutup (A benar), baterai menyuplai listrik dinamis (B benar), petir adalah loncatan muatan listrik statis (C benar). Penggaris mika dan kertas adalah listrik statis, bukan dinamis (D salah)."
+            },
+            {
+                id: 24,
+                type: "pgk",
+                category: "Bab 5 • Panca Indera & Siklus Hidup",
+                stimulus: `
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-xs">
+                        <p class="text-slate-700">Manusia memiliki lima alat indera (panca indera) untuk mengenali lingkungan, sedangkan hewan mengalami siklus hidup yang beragam.</p>
+                    </div>
+                `,
+                question: "Berilah tanda centang (✓) pada pernyataan yang <strong>BENAR</strong>! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Permukaan lidah memiliki bintil-bintil pengecap (papila) untuk merasakan manis, asin, asam, dan pahit",
+                    B: "Telinga bagian dalam memiliki rumah siput (koklea) yang mengubah getaran bunyi menjadi sinyal saraf",
+                    C: "Katak mengalami metamorfosis sempurna karena bentuk berudu sangat berbeda dengan katak dewasa",
+                    D: "Belalang dan kecoa mengalami fase kepompong (pupa) dalam siklus hidupnya"
+                },
+                answer: ["A", "B", "C"],
+                explanation: "Lidah punya papila pengecap (A benar), koklea mengubah getaran bunyi ke saraf pendengaran (B benar), katak bermetamorfosis sempurna (C benar). Belalang dan kecoa bermetamorfosis tidak sempurna sehingga tidak memiliki fase kepompong (D salah)."
+            },
+            {
+                id: 25,
+                type: "pgk",
+                category: "Bab 6 • Letak & Kondisi Wilayah Indonesia",
+                stimulus: `
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs">
+                        <p class="text-slate-700">Indonesia merupakan negara kepulauan terbesar di dunia yang memiliki posisi geografis dan astronomis yang sangat strategis.</p>
+                    </div>
+                `,
+                question: "Pilihlah pernyataan yang <strong>BENAR</strong> mengenai wilayah Indonesia dan peta! <em>(Pilih lebih dari satu jawaban)</em>",
+                options: {
+                    A: "Secara geografis, Indonesia terletak di antara Benua Asia dan Benua Australia",
+                    B: "Indonesia diapit oleh dua samudra, yaitu Samudra Hindia dan Samudra Pasifik",
+                    C: "Legenda pada peta berfungsi menjelaskan arti simbol-simbol yang terdapat pada peta",
+                    D: "Karena sebagian besar penduduknya bekerja di bidang pertanian, Indonesia dijuluki negara maritim"
+                },
+                answer: ["A", "B", "C"],
+                explanation: "Indonesia terletak di antara Benua Asia & Australia (A benar) serta Samudra Hindia & Pasifik (B benar). Legenda menjelaskan simbol peta (C benar). Julukan negara pertanian adalah negara agraris, sedangkan maritim karena wilayah lautannya yang luas (D salah)."
+            },
+
+            // ==================== BAGIAN C: 5 BENAR / SALAH (KOLOM PERNYATAAN) ====================
+            {
+                id: 26,
+                type: "bs",
+                category: "Bab 1 • Tumbuhan, Sumber Kehidupan",
+                stimulus: `
+                    <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-xs">
+                        <p class="text-slate-700">Tumbuhan hijau berperan sebagai produsen utama di bumi karena mampu menghasilkan makanan dan oksigen bagi makhluk hidup lainnya.</p>
+                    </div>
+                `,
+                question: "Tentukan <strong>Benar</strong> atau <strong>Salah</strong> untuk setiap pernyataan mengenai tumbuhan berikut!",
+                statements: [
+                    "Akar tunggang umumnya dimiliki oleh tumbuhan dikotil seperti pohon mangga dan jambu.",
+                    "Gas yang dikeluarkan tumbuhan saat berfotosintesis dan sangat dibutuhkan manusia untuk bernapas adalah karbon dioksida.",
+                    "Biji yang berada di dalam buah merupakan calon individu tumbuhan baru."
+                ],
+                answer: [true, false, true],
+                explanation: "1) Pohon mangga dan jambu memiliki akar tunggang (Benar). 2) Gas hasil fotosintesis untuk bernapas adalah oksigen, bukan karbon dioksida (Salah). 3) Biji merupakan bakal/calon tumbuhan baru (Benar)."
+            },
+            {
+                id: 27,
+                type: "bs",
+                category: "Bab 2 • Wujud Zat dan Perubahannya",
+                stimulus: `
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-xs">
+                        <p class="text-slate-700">Air dapat dijumpai dalam tiga wujud berbeda di alam, yaitu es batu (padat), air minum (cair), dan uap air (gas).</p>
+                    </div>
+                `,
+                question: "Tentukan <strong>Benar</strong> atau <strong>Salah</strong> untuk setiap pernyataan tentang wujud zat dan perubahannya!",
+                statements: [
+                    "Peristiwa berubahnya air cair menjadi es batu di dalam freezer disebut membeku.",
+                    "Benda gas memiliki bentuk yang selalu tetap meskipun dipindahkan ke wadah berbeda.",
+                    "Perubahan wujud dari benda padat menjadi benda cair disebut mencair."
+                ],
+                answer: [true, false, true],
+                explanation: "1) Air cair menjadi padat (es) disebut membeku (Benar). 2) Bentuk benda gas selalu berubah mengikuti wadah/ruangannya (Salah). 3) Padat menjadi cair disebut mencair (Benar)."
+            },
+            {
+                id: 28,
+                type: "bs",
+                category: "Bab 3 • Gaya di Sekitar Kita",
+                stimulus: `
+                    <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs">
+                        <p class="text-slate-700">Setiap gerakan benda di sekitar kita selalu dipengaruhi oleh gaya, baik berupa tarikan maupun dorongan.</p>
+                    </div>
+                `,
+                question: "Tentukan <strong>Benar</strong> atau <strong>Salah</strong> untuk setiap pernyataan mengenai gaya berikut!",
+                statements: [
+                    "Buah kelapa yang matang selalu jatuh ke bawah menuju tanah karena adanya gaya gravitasi bumi.",
+                    "Gaya gesek selalu merugikan manusia dan tidak pernah memberikan manfaat sama sekali.",
+                    "Sendok plastik dan penghapus karet termasuk benda nonmagnetis karena tidak dapat ditarik magnet."
+                ],
+                answer: [true, false, true],
+                explanation: "1) Gaya gravitasi menarik semua benda ke arah pusat bumi (Benar). 2) Gaya gesek juga sangat bermanfaat, misalnya membantu kita berjalan tanpa terpeleset dan mengerem kendaraan (Salah). 3) Plastik dan karet tidak ditarik magnet (Benar)."
+            },
+            {
+                id: 29,
+                type: "bs",
+                category: "Bab 4 • Mengubah Bentuk Energi",
+                stimulus: `
+                    <div class="bg-purple-50 p-3 rounded-xl border border-purple-200 text-xs">
+                        <p class="text-slate-700">Manusia memanfaatkan berbagai sumber energi dan alat pengubah bentuk energi untuk mempermudah aktivitas sehari-hari.</p>
+                    </div>
+                `,
+                question: "Tentukan <strong>Benar</strong> atau <strong>Salah</strong> untuk setiap pernyataan mengenai energi dan listrik berikut!",
+                statements: [
+                    "Minyak bumi dan batu bara merupakan sumber energi fosil yang jumlahnya terbatas dan tidak dapat diperbarui.",
+                    "Pada televisi yang menyala terjadi perubahan energi listrik menjadi energi cahaya dan energi bunyi.",
+                    "Listrik statis terjadi karena adanya aliran elektron secara terus-menerus melalui kabel tembaga."
+                ],
+                answer: [true, true, false],
+                explanation: "1) Minyak bumi dan batu bara adalah energi fosil tak terbarukan (Benar). 2) Televisi mengubah listrik menjadi cahaya (gambar) dan bunyi (suara) (Benar). 3) Aliran listrik terus-menerus pada kabel adalah listrik dinamis, bukan listrik statis (Salah)."
+            },
+            {
+                id: 30,
+                type: "bs",
+                category: "Bab 5 & Bab 6 • Panca Indera, Siklus Hidup & Wilayah Indonesia",
+                stimulus: `
+                    <div class="bg-slate-100 p-3 rounded-xl border border-slate-300 text-xs">
+                        <p class="text-slate-700">Pemahaman tentang tubuh manusia, siklus makhluk hidup, serta kondisi geografis Indonesia membantu kita menjaga kesehatan dan kelestarian alam.</p>
+                    </div>
+                `,
+                question: "Tentukan <strong>Benar</strong> atau <strong>Salah</strong> untuk setiap pernyataan berikut!",
+                statements: [
+                    "Kulit merupakan alat indera yang peka terhadap rangsangan sentuhan, tekanan, suhu panas/dingin, dan rasa nyeri.",
+                    "Siklus hidup nyamuk dimulai dari telur → jentik (larva) → pupa → nyamuk dewasa.",
+                    "Wilayah dataran rendah di Indonesia umumnya memiliki ketinggian lebih dari 1.500 meter di atas permukaan laut."
+                ],
+                answer: [true, true, false],
+                explanation: "1) Kulit adalah indera peraba yang peka terhadap sentuhan, suhu, dan nyeri (Benar). 2) Nyamuk bermetamorfosis sempurna: telur → jentik → pupa → dewasa (Benar). 3) Dataran rendah memiliki ketinggian 0–200 mdpl, sedangkan > 700 mdpl adalah dataran tinggi (Salah)."
+            }
+        ];
+
+        /* ==================== STATE MANAGEMENT ==================== */
+        let state = {
+            student: {
+                username: '',
+                nama: 'MUHAMMAD ARFANDIO MAHADI',
+                kelas: '4B',
+                tempatLahir: '',
+                tanggalLahir: ''
+            },
+            questions: [],
+            userAnswers: {}, // pg: 'A', pgk: ['A','C'], bs: [true, false, true]
+            doubtFlags: {},  // { qIndex: true | false }
+            currentIndex: 0,
+            timerSeconds: 3600, // 60 minutes
+            timerInterval: null,
+            timeStarted: null,
+            timeFinished: null,
+            violationCount: 0,
+            isSubmitted: false
+        };
+
+        const STORAGE_KEY = 'CAT_DIO_IPAS_30_2026';
+
+        window.onload = function() {
+            // Restore saved state if exists
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && !parsed.isSubmitted) {
+                        state = parsed;
+                        // Restore screen
+                        if (state.student.username) {
+                            if (state.timeStarted) {
+                                showPage('page-exam');
+                                initExamView();
+                                startTimer();
+                            } else {
+                                showPage('page-identity');
+                            }
+                        }
+                    }
+                } catch(e) {
+                    console.error("Error restoring saved state", e);
+                }
+            }
+
+            // Anti-Cheat: Security Tab Visibility Change listener
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && !state.isSubmitted && state.timeStarted) {
+                    state.violationCount++;
+                    document.getElementById('violation-count').innerText = state.violationCount;
+                    openModal('modal-security');
+                    saveToStorage();
+                }
+            });
+        };
+
+        function saveToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch(e) {
+                console.error("Save state error", e);
+            }
+        }
+
+        /* ==================== QUESTION STATUS & GRADING HELPERS ==================== */
+        function isQuestionAnswered(idx) {
+            const q = state.questions[idx];
+            const ans = state.userAnswers[idx];
+            if (!q || ans === undefined || ans === null) return false;
+
+            if (q.type === 'pg') {
+                return typeof ans === 'string' && ans.length > 0;
+            } else if (q.type === 'pgk') {
+                return Array.isArray(ans) && ans.length > 0;
+            } else if (q.type === 'bs') {
+                return Array.isArray(ans) && ans.length === q.statements.length && ans.every(v => v === true || v === false);
+            }
+            return false;
+        }
+
+        function isQuestionCorrect(idx) {
+            const q = state.questions[idx];
+            const ans = state.userAnswers[idx];
+            if (!isQuestionAnswered(idx)) return false;
+
+            if (q.type === 'pg') {
+                return ans === q.answer;
+            } else if (q.type === 'pgk') {
+                const sortedUser = [...ans].sort().join(',');
+                const sortedKey = [...q.answer].sort().join(',');
+                return sortedUser === sortedKey;
+            } else if (q.type === 'bs') {
+                return ans.length === q.answer.length && ans.every((val, i) => val === q.answer[i]);
+            }
+            return false;
+        }
+
+        /* ==================== PAGE NAVIGATION ==================== */
+        function showPage(pageId) {
+            ['page-login', 'page-identity', 'page-exam', 'page-result'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const active = document.getElementById(pageId);
+            if (active) active.classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        /* ==================== HALAMAN 1: LOGIN LOGIC ==================== */
+        function handleLogin(e) {
+            e.preventDefault();
+            const userVal = document.getElementById('username').value.trim();
+            const passVal = document.getElementById('password').value.trim();
+            const errBox = document.getElementById('login-error');
+
+            // Exact credential check
+            if (userVal === 'DIO' && passVal === 'DIO123') {
+                errBox.classList.add('hidden');
+                state.student.username = userVal;
+                saveToStorage();
+                showPage('page-identity');
+            } else {
+                errBox.classList.remove('hidden');
+                document.getElementById('login-error-msg').innerText = "Username/Password salah! (Hint: user=DIO, password=DIO123)";
+            }
+        }
+
+        function goToLogin() {
+            showPage('page-login');
+        }
+
+        /* ==================== HALAMAN 2: IDENTITAS LOGIC ==================== */
+        function handleStartExam(e) {
+            e.preventDefault();
+            state.student.kelas = document.getElementById('identity-kelas').value;
+            state.student.tempatLahir = document.getElementById('identity-tempat').value;
+            state.student.tanggalLahir = document.getElementById('identity-tanggal').value;
+
+            // Acak urutan soal di dalam masing-masing kelompok tipe soal:
+            // No 1-15: Pilihan Ganda, No 16-25: PG Kompleks, No 26-30: Benar/Salah
+            const pgQuestions = rawQuestionBank.filter(q => q.type === 'pg').sort(() => Math.random() - 0.5);
+            const pgkQuestions = rawQuestionBank.filter(q => q.type === 'pgk').sort(() => Math.random() - 0.5);
+            const bsQuestions = rawQuestionBank.filter(q => q.type === 'bs').sort(() => Math.random() - 0.5);
+
+            state.questions = [...pgQuestions, ...pgkQuestions, ...bsQuestions];
+            state.userAnswers = {};
+            state.doubtFlags = {};
+            state.currentIndex = 0;
+            state.timeStarted = Date.now();
+            state.timerSeconds = 3600;
+
+            saveToStorage();
+
+            showPage('page-exam');
+            initExamView();
+            startTimer();
+        }
+
+        /* ==================== HALAMAN 3: EXAM CAT ENGINE ==================== */
+        function initExamView() {
+            // Set Header Identity
+            document.getElementById('exam-student-name').innerText = state.student.nama;
+            document.getElementById('exam-student-class').innerText = state.student.kelas;
+            document.getElementById('exam-student-ttg').innerText = `${state.student.tempatLahir}, ${state.student.tanggalLahir}`;
+
+            renderQuestion();
+            renderGridNav();
+            updateCounts();
+        }
+
+        function renderQuestion() {
+            const q = state.questions[state.currentIndex];
+            if (!q) return;
+
+            document.getElementById('current-q-num').innerText = state.currentIndex + 1;
+            document.getElementById('current-q-category').innerText = q.category;
+
+            // Badge tipe soal
+            const typeBadge = document.getElementById('current-q-type-badge');
+            if (q.type === 'pg') {
+                typeBadge.innerText = 'Pilihan Ganda';
+                typeBadge.className = 'text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200';
+            } else if (q.type === 'pgk') {
+                typeBadge.innerText = 'Pilihan Ganda Kompleks (Ceklis)';
+                typeBadge.className = 'text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200';
+            } else if (q.type === 'bs') {
+                typeBadge.innerText = 'Benar / Salah';
+                typeBadge.className = 'text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200';
+            }
+
+            document.getElementById('question-stimulus').innerHTML = q.stimulus;
+            document.getElementById('question-text').innerHTML = q.question;
+
+            // Render Options according to question type
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+
+            if (q.type === 'pg') {
+                // Pilihan Ganda (Single Select)
+                const selectedAns = state.userAnswers[state.currentIndex];
+
+                Object.keys(q.options).forEach(letter => {
+                    const isSelected = selectedAns === letter;
+                    const optBtn = document.createElement('button');
+                    optBtn.type = 'button';
+                    optBtn.onclick = () => selectOption(letter);
+                    optBtn.className = `w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 transition-all flex items-start gap-3 text-xs sm:text-sm ${
+                        isSelected 
+                        ? 'border-blue-600 bg-blue-50/80 text-blue-900 font-bold shadow-md' 
+                        : 'border-slate-200 bg-white hover:border-slate-300 text-slate-700 hover:bg-slate-50'
+                    }`;
+
+                    optBtn.innerHTML = `
+                        <div class="w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
+                            isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 border border-slate-300'
+                        }">
+                            ${letter}
+                        </div>
+                        <div class="pt-0.5">${q.options[letter]}</div>
+                    `;
+                    optContainer.appendChild(optBtn);
+                });
+
+            } else if (q.type === 'pgk') {
+                // Pilihan Ganda Kompleks (Checkbox Multi Select)
+                const selectedArr = Array.isArray(state.userAnswers[state.currentIndex]) ? state.userAnswers[state.currentIndex] : [];
+
+                const hintBanner = document.createElement('div');
+                hintBanner.className = 'text-xs text-purple-800 bg-purple-50 border border-purple-200 px-3 py-2 rounded-xl flex items-center gap-2 font-medium';
+                hintBanner.innerHTML = '<i class="fa-solid fa-square-check text-purple-600"></i> <span>Klik kotak ceklis untuk memilih <strong>lebih dari satu</strong> jawaban yang benar.</span>';
+                optContainer.appendChild(hintBanner);
+
+                Object.keys(q.options).forEach(letter => {
+                    const isChecked = selectedArr.includes(letter);
+                    const optBtn = document.createElement('button');
+                    optBtn.type = 'button';
+                    optBtn.onclick = () => toggleCheckboxOption(letter);
+                    optBtn.className = `w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 transition-all flex items-start gap-3 text-xs sm:text-sm ${
+                        isChecked 
+                        ? 'border-purple-600 bg-purple-50/80 text-purple-950 font-bold shadow-md' 
+                        : 'border-slate-200 bg-white hover:border-slate-300 text-slate-700 hover:bg-slate-50'
+                    }`;
+
+                    optBtn.innerHTML = `
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-base shrink-0 ${
+                            isChecked ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-400 border border-slate-300'
+                        }">
+                            <i class="${isChecked ? 'fa-solid fa-check' : 'fa-regular fa-square text-transparent'}"></i>
+                        </div>
+                        <div class="pt-0.5 flex-1">
+                            <span class="font-bold mr-1 text-purple-700">${letter}.</span> ${q.options[letter]}
+                        </div>
+                    `;
+                    optContainer.appendChild(optBtn);
+                });
+
+            } else if (q.type === 'bs') {
+                // Benar / Salah (Tabel Pernyataan)
+                const currentArr = Array.isArray(state.userAnswers[state.currentIndex])
+                    ? state.userAnswers[state.currentIndex]
+                    : new Array(q.statements.length).fill(null);
+
+                const tableWrapper = document.createElement('div');
+                tableWrapper.className = 'overflow-x-auto rounded-2xl border border-slate-300 bg-white shadow-xs';
+
+                let rowsHtml = '';
+                q.statements.forEach((stmt, sIdx) => {
+                    const val = currentArr[sIdx];
+                    rowsHtml += `
+                        <tr class="border-t border-slate-200 hover:bg-slate-50/80 transition-colors">
+                            <td class="p-3 text-center font-bold text-slate-500 text-xs align-middle">${sIdx + 1}</td>
+                            <td class="p-3 text-xs sm:text-sm text-slate-800 font-medium leading-relaxed align-middle">${stmt}</td>
+                            <td class="p-2.5 text-center align-middle">
+                                <button type="button" onclick="selectTrueFalse(${sIdx}, true)"
+                                    class="w-full min-w-[68px] py-2 px-2.5 rounded-xl border-2 text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                                        val === true
+                                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm'
+                                        : 'bg-white border-slate-300 text-slate-600 hover:border-emerald-400'
+                                    }">
+                                    <i class="${val === true ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'}"></i>
+                                    <span>Benar</span>
+                                </button>
+                            </td>
+                            <td class="p-2.5 text-center align-middle">
+                                <button type="button" onclick="selectTrueFalse(${sIdx}, false)"
+                                    class="w-full min-w-[68px] py-2 px-2.5 rounded-xl border-2 text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                                        val === false
+                                        ? 'bg-rose-600 border-rose-600 text-white shadow-sm'
+                                        : 'bg-white border-slate-300 text-slate-600 hover:border-rose-400'
+                                    }">
+                                    <i class="${val === false ? 'fa-solid fa-circle-xmark' : 'fa-regular fa-circle'}"></i>
+                                    <span>Salah</span>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableWrapper.innerHTML = `
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-blue-900 text-white text-xs uppercase tracking-wider">
+                                <th class="p-3 text-center w-10">No</th>
+                                <th class="p-3">Pernyataan</th>
+                                <th class="p-3 text-center w-24">Benar</th>
+                                <th class="p-3 text-center w-24">Salah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+                `;
+                optContainer.appendChild(tableWrapper);
+            }
+
+            // Update Doubt Button State
+            const isDoubt = !!state.doubtFlags[state.currentIndex];
+            const btnDoubt = document.getElementById('btn-doubt');
+            const doubtIcon = document.getElementById('doubt-icon');
+            const doubtText = document.getElementById('doubt-text');
+
+            if (isDoubt) {
+                btnDoubt.className = "bg-amber-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow border border-amber-600";
+                doubtIcon.className = "fa-solid fa-flag text-white";
+                doubtText.innerText = "Terandai Ragu";
+            } else {
+                btnDoubt.className = "bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all border border-amber-300";
+                doubtIcon.className = "fa-regular fa-flag text-amber-700";
+                doubtText.innerText = "Ragu-Ragu";
+            }
+
+            // Button Disable Checks
+            document.getElementById('btn-prev').disabled = (state.currentIndex === 0);
+            document.getElementById('btn-prev').style.opacity = (state.currentIndex === 0) ? '0.5' : '1';
+            
+            document.getElementById('btn-next').disabled = (state.currentIndex === state.questions.length - 1);
+            document.getElementById('btn-next').style.opacity = (state.currentIndex === state.questions.length - 1) ? '0.5' : '1';
+
+            renderGridNav();
+        }
+
+        function selectOption(letter) {
+            state.userAnswers[state.currentIndex] = letter;
+            saveToStorage();
+            renderQuestion();
+            updateCounts();
+        }
+
+        function toggleCheckboxOption(letter) {
+            let current = Array.isArray(state.userAnswers[state.currentIndex]) ? [...state.userAnswers[state.currentIndex]] : [];
+            if (current.includes(letter)) {
+                current = current.filter(item => item !== letter);
+            } else {
+                current.push(letter);
+                current.sort();
+            }
+
+            if (current.length === 0) {
+                delete state.userAnswers[state.currentIndex];
+            } else {
+                state.userAnswers[state.currentIndex] = current;
+            }
+
+            saveToStorage();
+            renderQuestion();
+            updateCounts();
+        }
+
+        function selectTrueFalse(stmtIdx, boolVal) {
+            const q = state.questions[state.currentIndex];
+            let current = Array.isArray(state.userAnswers[state.currentIndex])
+                ? [...state.userAnswers[state.currentIndex]]
+                : new Array(q.statements.length).fill(null);
+
+            current[stmtIdx] = boolVal;
+            state.userAnswers[state.currentIndex] = current;
+
+            saveToStorage();
+            renderQuestion();
+            updateCounts();
+        }
+
+        function toggleDoubt() {
+            state.doubtFlags[state.currentIndex] = !state.doubtFlags[state.currentIndex];
+            saveToStorage();
+            renderQuestion();
+            updateCounts();
+        }
+
+        function navigateQuestion(direction) {
+            const newIdx = state.currentIndex + direction;
+            if (newIdx >= 0 && newIdx < state.questions.length) {
+                state.currentIndex = newIdx;
+                saveToStorage();
+                renderQuestion();
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            state.currentIndex = idx;
+            saveToStorage();
+            renderQuestion();
+            toggleSidebar(false);
+        }
+
+        function renderGridNav() {
+            const grid = document.getElementById('question-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            state.questions.forEach((q, idx) => {
+                const isCurrent = (idx === state.currentIndex);
+                const hasAnswer = isQuestionAnswered(idx);
+                const isDoubt = !!state.doubtFlags[idx];
+
+                let bgClass = "bg-slate-100 text-slate-700 border-slate-300";
+                if (isDoubt) {
+                    bgClass = "bg-amber-400 text-slate-900 border-amber-500 font-black";
+                } else if (hasAnswer) {
+                    bgClass = "bg-emerald-600 text-white border-emerald-700 font-bold";
+                }
+
+                if (isCurrent) {
+                    bgClass += " ring-4 ring-blue-400 ring-offset-1";
+                }
+
+                const btn = document.createElement('button');
+                btn.onclick = () => jumpToQuestion(idx);
+                btn.className = `h-10 rounded-xl border text-xs flex items-center justify-center transition-all ${bgClass}`;
+                btn.innerText = idx + 1;
+                grid.appendChild(btn);
+            });
+        }
+
+        function updateCounts() {
+            const total = state.questions.length;
+            let answered = 0;
+            for (let i = 0; i < total; i++) {
+                if (isQuestionAnswered(i)) answered++;
+            }
+            const doubt = Object.keys(state.doubtFlags).filter(k => state.doubtFlags[k]).length;
+            const unanswered = total - answered;
+
+            document.getElementById('count-answered').innerText = answered;
+            document.getElementById('count-doubt').innerText = doubt;
+            document.getElementById('count-unanswered').innerText = unanswered;
+        }
+
+        function toggleSidebar(forceState) {
+            const drawer = document.getElementById('sidebar-drawer');
+            const backdrop = document.getElementById('drawer-backdrop');
+            
+            const isOpen = drawer.classList.contains('translate-x-0');
+            const shouldOpen = (forceState !== undefined) ? forceState : !isOpen;
+
+            if (shouldOpen) {
+                drawer.classList.remove('translate-x-full');
+                drawer.classList.add('translate-x-0');
+                backdrop.classList.remove('hidden');
+            } else {
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        function startTimer() {
+            if (state.timerInterval) clearInterval(state.timerInterval);
+
+            function tick() {
+                if (state.timerSeconds <= 0) {
+                    clearInterval(state.timerInterval);
+                    autoSubmitExam();
+                    return;
+                }
+
+                // Low time alert check (e.g. at 5 minutes = 300s)
+                if (state.timerSeconds === 300) {
+                    openModal('modal-lowtime');
+                }
+
+                state.timerSeconds--;
+                saveToStorage();
+
+                const mins = Math.floor(state.timerSeconds / 60);
+                const secs = state.timerSeconds % 60;
+                document.getElementById('timer-display').innerText = 
+                    `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            tick();
+            state.timerInterval = setInterval(tick, 1000);
+        }
+
+        /* ==================== SUBMISSION & RESULT LOGIC ==================== */
+        function confirmFinishExam() {
+            let answered = 0;
+            for (let i = 0; i < state.questions.length; i++) {
+                if (isQuestionAnswered(i)) answered++;
+            }
+            const doubt = Object.keys(state.doubtFlags).filter(k => state.doubtFlags[k]).length;
+            const unanswered = state.questions.length - answered;
+
+            document.getElementById('modal-ans-count').innerText = answered;
+            document.getElementById('modal-doubt-count').innerText = doubt;
+            document.getElementById('modal-unans-count').innerText = unanswered;
+
+            openModal('modal-confirm');
+        }
+
+        function autoSubmitExam() {
+            submitExam();
+        }
+
+        function submitExam() {
+            closeModal('modal-confirm');
+            if (state.timerInterval) clearInterval(state.timerInterval);
+
+            state.isSubmitted = true;
+            state.timeFinished = Date.now();
+            saveToStorage();
+
+            renderResultView();
+            showPage('page-result');
+        }
+
+        function formatReviewAnswer(q, ans, isKey = false) {
+            if (q.type === 'pg') {
+                if (!ans) return 'Tidak Dijawab';
+                return `${ans}. ${q.options[ans]}`;
+            } else if (q.type === 'pgk') {
+                if (!Array.isArray(ans) || ans.length === 0) return 'Tidak Dijawab';
+                return ans.map(letter => `${letter}. ${q.options[letter]}`).join('<br>');
+            } else if (q.type === 'bs') {
+                if (!Array.isArray(ans) || ans.every(v => v === null)) return 'Tidak Dijawab';
+                return q.statements.map((stmt, i) => {
+                    const val = ans[i];
+                    const label = val === true ? 'Benar' : (val === false ? 'Salah' : 'Belum diisi');
+                    return `(${i + 1}) ${label}`;
+                }).join(' | ');
+            }
+            return '-';
+        }
+
+        function renderResultView() {
+            document.getElementById('res-student-nama').innerText = state.student.nama;
+            document.getElementById('res-student-kelas').innerText = `Kelas: ${state.student.kelas}`;
+            document.getElementById('res-student-ttg').innerText = `${state.student.tempatLahir}, ${state.student.tanggalLahir}`;
+
+            // Calculate Score
+            let correctCount = 0;
+            state.questions.forEach((q, idx) => {
+                if (isQuestionCorrect(idx)) {
+                    correctCount++;
+                }
+            });
+
+            const totalQuestions = state.questions.length;
+            const totalScore = Math.round((correctCount / totalQuestions) * 100);
+            const wrongCount = totalQuestions - correctCount;
+
+            document.getElementById('res-total-score').innerText = `${totalScore} / 100`;
+            document.getElementById('res-correct-count').innerText = correctCount;
+            document.getElementById('res-wrong-count').innerText = wrongCount;
+
+            // Status Badge
+            const statusEl = document.getElementById('res-grade-status');
+            if (totalScore >= 85) {
+                statusEl.innerText = "Sangat Memuaskan (A)";
+            } else if (totalScore >= 70) {
+                statusEl.innerText = "Baik (B)";
+            } else if (totalScore >= 55) {
+                statusEl.innerText = "Cukup (C)";
+            } else {
+                statusEl.innerText = "Perlu Belajar Lagi (D)";
+            }
+
+            // Time Used calculation
+            const elapsedSeconds = 3600 - state.timerSeconds;
+            const mins = Math.floor(elapsedSeconds / 60);
+            const secs = elapsedSeconds % 60;
+            document.getElementById('res-time-used').innerText = `${mins}m ${secs}s`;
+
+            // Render Detailed Review Breakdown
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            state.questions.forEach((q, idx) => {
+                const userAns = state.userAnswers[idx];
+                const isCorrect = isQuestionCorrect(idx);
+
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-2xl border ${
+                    isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-red-50/60 border-red-200'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2 mb-2">
+                        <span class="font-bold text-xs ${isCorrect ? 'text-emerald-800' : 'text-red-800'}">
+                            Soal No. ${idx + 1} (${q.category})
+                        </span>
+                        <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
+                            isCorrect ? 'bg-emerald-200 text-emerald-800' : 'bg-red-200 text-red-800'
+                        }">
+                            ${isCorrect ? '<i class="fa-solid fa-check mr-1"></i> Benar' : '<i class="fa-solid fa-xmark mr-1"></i> Salah'}
+                        </span>
+                    </div>
+
+                    <div class="text-xs text-slate-700 font-medium mb-2">${q.question}</div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3">
+                        <div class="p-2 rounded-xl bg-white border border-slate-200">
+                            <span class="text-slate-400 font-bold block text-[10px]">Jawaban Kamu:</span>
+                            <span class="font-bold ${isCorrect ? 'text-emerald-600' : 'text-red-600'}">
+                                ${formatReviewAnswer(q, userAns, false)}
+                            </span>
+                        </div>
+                        <div class="p-2 rounded-xl bg-emerald-100/60 border border-emerald-300">
+                            <span class="text-emerald-700 font-bold block text-[10px]">Kunci Jawaban Benar:</span>
+                            <span class="font-bold text-emerald-800">
+                                ${formatReviewAnswer(q, q.answer, true)}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/80 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600">
+                        <strong class="text-blue-700 block mb-0.5"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Pembahasan:</strong>
+                        ${q.explanation}
+                    </div>
+                `;
+
+                reviewContainer.appendChild(item);
+            });
+        }
+
+        /* ==================== MODAL HELPERS ==================== */
+        function openModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.classList.add('hidden');
+        }
+
+        function resetTest() {
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+        }
+    </script>
+</body>
+</html>
